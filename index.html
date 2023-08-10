@@ -6,8 +6,81 @@
     <meta name="viewport"
         content="width=device-width,   initial-scale=1.0" />
     <title>QR Code Generator</title>
-   <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007f7f;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #f29416;
+            margin: 0.5rem 0;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="submit"] {
+            background-color: #007f7f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #005f5f;
+        }
+
+        #qr-code {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #download-link {
+            display: none;
+        }
+    </style>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
@@ -28,7 +101,37 @@
         </a>
     </main>
     <script>
-       
+        let qrContentInput = document.getElementById("qr-content");
+        let qrGenerationForm =
+            document.getElementById("qr-generation-form");
+        let qrCode;
+
+        function generateQrCode(qrContent) {
+            return new QRCode("qr-code", {
+                text: qrContent,
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+        }
+
+        qrGenerationForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            let qrContent = qrContentInput.value;
+            if (qrCode == null) {
+                qrCode = generateQrCode(qrContent);
+            } else {
+                qrCode.makeCode(qrContent);
+            }
+
+            // Create a download link for the QR code
+            const qrCanvas = document.querySelector("#qr-code canvas");
+            const downloadLink = document.getElementById("download-link");
+            downloadLink.style.display = "block";
+            downloadLink.href = qrCanvas.toDataURL("image/png");
+        });
     </script>
 </body>
 
